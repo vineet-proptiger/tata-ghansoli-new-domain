@@ -29,7 +29,7 @@ const LeadForm = ({ formName = 'Hero Form', btnText = 'Submit Details', isTransp
     const tracking = buildTrackingFields()
     
     // Block the specific spam gclid
-    if (BLOCKED_GCLIDS.includes(tracking.gclid)) {
+    if (tracking.gclid && BLOCKED_GCLIDS.includes(tracking.gclid)) {
       setSuccess(true)
       setLoading(false)
       return
