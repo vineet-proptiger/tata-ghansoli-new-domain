@@ -70,6 +70,9 @@ export const metadata = {
     description: "A thoughtfully planned 47.5-acre landmark development in Ghansoli, Navi Mumbai by Tata Housing.",
     images: ['/projects/iris-tower.jpg'],
   },
+  icons: {
+    icon: '/images/favicon/fav.webp',
+  },
 }
 
 import SmoothScroll from '../components/SmoothScroll'
