@@ -5,7 +5,8 @@
 // ═══════════════════════════════════════════════════════════════
 
 /* ─── CONFIG ─────────────────────────────────────────────────── */
-import { SHEET_WEBHOOK, PROPTIGER_URL, CITY_ID, CITY_SLUG } from '../../../lib/config'
+import { SHEET_WEBHOOK } from '../../../lib/config'
+// import { PROPTIGER_URL, CITY_ID, CITY_SLUG } from '../../../lib/config'
 /* ────────────────────────────────────────────────────────────── */
 
 function clean(v) {
@@ -114,15 +115,21 @@ export async function POST(request) {
       sheet_name: get('sheet_name'),
     })
 
-    fetch(SHEET_WEBHOOK, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: sheetPayload.toString(),
-    })
-      .then(r => console.log('[Sheet] status:', r.status))
-      .catch(e => console.error('[Sheet] error:', e.message))
+    let sheetStatus = null
+    try {
+      const sheetRes = await fetch(SHEET_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: sheetPayload.toString(),
+      })
+      sheetStatus = sheetRes.status
+      console.log('[Sheet] status:', sheetStatus)
+    } catch (e) {
+      console.error('[Sheet] error:', e.message)
+    }
 
-    /* ── 2. Proptiger CRM ── */
+    /* ── 2. Proptiger CRM (Commented out — Data only sent to Google Sheets) ── */
+    /*
     const ptUrl = `${PROPTIGER_URL}?utm_source=${encodeURIComponent(utmSource)}&utm_medium=${encodeURIComponent(utmMedium)}&utm_campaign=${encodeURIComponent(utmCampaign)}&utm_term=${encodeURIComponent(utmTerm)}&utm_content=${encodeURIComponent(utmContent)}&gclid=${encodeURIComponent(gclid)}&gbraid=${encodeURIComponent(gbraid)}&wbraid=${encodeURIComponent(wbraid)}&campaign_name=${encodeURIComponent(campaignName)}&sourceDomain=Microsite`
 
     const ptPayload = {
@@ -178,10 +185,12 @@ export async function POST(request) {
     } catch (e) {
       console.error('[CRM] fetch error:', e.message)
     }
+    */
 
     return Response.json({
       status: true,
-      crm: ptStatus,
+      sheet: sheetStatus,
+      // crm: ptStatus,
     })
 
   } catch (err) {
